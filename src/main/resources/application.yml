@@ -1,0 +1,16 @@
+server:
+  port: 11005
+spring:
+  application:
+    name: jcallpy ## java调用python脚本
+  datasource:
+    url: jdbc:mysql://10.104.1.206:3306/jcallpy?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+    name: root
+    password: zc1021
+    driver-class-name: org.mariadb.jdbc.Driver
+
+jcp:
+  file:
+    path: /Users/cong/Downloads/jcallpy/
+pagehelper:
+  helper-dialect: mysql
