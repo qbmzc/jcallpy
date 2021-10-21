@@ -6,11 +6,9 @@ import com.congcong.jcallpy.module.python.service.PythonFileService;
 
 import com.congcong.jcallpy.util.CommandUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -40,7 +38,7 @@ public class PythonFileServiceImpl implements PythonFileService {
     public int save(PythonFile pythonFile) {
         pythonFile.setCreateTime(new Date());
         pythonFile.setUpdateTime(new Date());
-        pythonFile.setStatus(0);
+        pythonFile.setState(0);
         pythonFile.setVersion(0L);
         pythonFile.setIsDeleted(0);
         repository.save(pythonFile);
@@ -71,11 +69,11 @@ public class PythonFileServiceImpl implements PythonFileService {
     public String exec(String name) {
         log.info("要执行的脚本名称为：{}", name);
         PythonFile file = new PythonFile();
-        file.setName(name);
+        file.setFileName(name);
         Example<PythonFile> example = Example.of(file);
         Optional<PythonFile> optional = this.repository.findOne(example);
         PythonFile pythonFile = optional.get();
-        String path = pythonFile.getPath();
+        String path = pythonFile.getFilePath();
         return CommandUtils.doExec(path);
     }
 
@@ -117,7 +115,7 @@ public class PythonFileServiceImpl implements PythonFileService {
     @Override
     public PythonFile queryOneByName(String name) {
         log.info("查询脚本名称为：{} 的记录",name);
-        PythonFile file = new PythonFile();file.setName(name);
+        PythonFile file = new PythonFile();file.setFileName(name);
         Optional<PythonFile> one = repository.findOne(Example.of(file));
         return one.get();
     }

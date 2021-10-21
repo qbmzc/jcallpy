@@ -14,3 +14,7 @@ spring:
 jcp:
   file:
     path: /Users/cong/Downloads/jcallpy/
+
+logging:
+  level:
+    com.congcong.jcallpy: debug

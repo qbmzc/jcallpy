@@ -23,19 +23,19 @@ public class PythonFile implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "路径，执行脚本时需要该参数")
-    private String path;
+    private String filePath;
 
     @ApiModelProperty(value = "脚本名称")
-    private String name;
+    private String fileName;
     @ApiModelProperty(value = "描述说明")
-    private String describe;
+    private String remarks;
 
     /**
      * 1,启用
      * 0，禁用
      */
     @ApiModelProperty(value = "脚本状态，1，启用，0 禁用")
-    private Integer status;
+    private Integer state;
 
     @ApiModelProperty(value = "创建时间")
 

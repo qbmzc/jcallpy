@@ -15,11 +15,12 @@ public class UploadParam {
 
     @NotBlank
     @ApiModelProperty("脚本名称，唯一")
-    private String name;
+    private String fileName;
     /**
      * 描述
+     *
      */
     @NotBlank
     @ApiModelProperty("脚本描述")
-    private String describe;
+    private String remarks;
 }

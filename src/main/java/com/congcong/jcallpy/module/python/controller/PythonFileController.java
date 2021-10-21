@@ -11,20 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author cong
@@ -51,25 +42,26 @@ public class PythonFileController {
     public R upload(@RequestPart MultipartFile file, @Valid UploadParam param) {
         String s = filePath + file.getOriginalFilename();
         log.info("文件:{}保存位置:{}", file.getOriginalFilename(), s);
-        File tempFile = new File(s);
-        FileUtils.forceMkdir(tempFile);
-        file.transferTo(tempFile);
+        File tempFilePath = new File(filePath);
+        FileUtils.forceMkdir(tempFilePath);
+        file.transferTo(new File(s));
         //将记录写入数据库
         PythonFile pythonFile = new PythonFile();
-        pythonFile.setPath(s);
-        pythonFile.setName(param.getName());
-        pythonFile.setDescribe(param.getDescribe());
+        pythonFile.setFilePath(s);
+        pythonFile.setFileName(param.getFileName());
+        pythonFile.setRemarks(param.getRemarks());
         int save = service.save(pythonFile);
         if (save == 1)
             return new R(200, "File saved successfully");
         return new R(500, "File saving failed");
     }
 
+    @ApiOperation("执行脚本并返回执行结果")
     @GetMapping("/{name}")
     public R queryByName(@PathVariable String name) {
-        PythonFile pythonFile = this.service.queryOneByName(name);
+        String exec = this.service.exec(name);
         R r = new R();
-        r.setBody(pythonFile);
+        r.setBody(exec);
         r.setCode(200);
         r.setMsg("success");
         return r;
