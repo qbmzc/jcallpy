@@ -1,25 +1,33 @@
 package com.congcong.jcallpy.module.python.service.impl;
 
-import com.congcong.jcallpy.module.python.mapper.PythonFileMapper;
+import com.congcong.jcallpy.module.python.jpa.PythonFileRepository;
 import com.congcong.jcallpy.module.python.pojo.PythonFile;
 import com.congcong.jcallpy.module.python.service.PythonFileService;
-import com.github.pagehelper.Page;
+
+import com.congcong.jcallpy.util.CommandUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author cong
  * @since 2021/10/21 15:01
  */
+@Slf4j
 @Service
 public class PythonFileServiceImpl implements PythonFileService {
 
-    private final PythonFileMapper pythonFileMapper;
+    private final PythonFileRepository repository;
 
-    public PythonFileServiceImpl(PythonFileMapper pythonFileMapper) {
-        this.pythonFileMapper = pythonFileMapper;
+    public PythonFileServiceImpl(PythonFileRepository repository) {
+        this.repository = repository;
     }
 
     /**
@@ -35,7 +43,9 @@ public class PythonFileServiceImpl implements PythonFileService {
         pythonFile.setStatus(0);
         pythonFile.setVersion(0L);
         pythonFile.setIsDeleted(0);
-        return 0;
+        repository.save(pythonFile);
+        log.info("新增记录:{}", pythonFile);
+        return 1;
     }
 
     /**
@@ -46,7 +56,9 @@ public class PythonFileServiceImpl implements PythonFileService {
      */
     @Override
     public int update(PythonFile pythonFile) {
-        return 0;
+        log.info("更新记录：{}", pythonFile.toString());
+        repository.save(pythonFile);
+        return 1;
     }
 
     /**
@@ -57,7 +69,14 @@ public class PythonFileServiceImpl implements PythonFileService {
      */
     @Override
     public String exec(String name) {
-        return null;
+        log.info("要执行的脚本名称为：{}", name);
+        PythonFile file = new PythonFile();
+        file.setName(name);
+        Example<PythonFile> example = Example.of(file);
+        Optional<PythonFile> optional = this.repository.findOne(example);
+        PythonFile pythonFile = optional.get();
+        String path = pythonFile.getPath();
+        return CommandUtils.doExec(path);
     }
 
     /**
@@ -67,7 +86,11 @@ public class PythonFileServiceImpl implements PythonFileService {
      */
     @Override
     public int delete(Long id) {
-        return 0;
+        PythonFile file = new PythonFile();
+        file.setId(id);
+        file.setIsDeleted(1);
+        repository.save(file);
+        return 1;
     }
 
     /**
@@ -79,7 +102,10 @@ public class PythonFileServiceImpl implements PythonFileService {
      */
     @Override
     public Page<PythonFile> queryPage(Integer pageNum, Integer pageSize) {
-        return null;
+        PythonFile file = new PythonFile();
+        file.setIsDeleted(0);
+        log.info("分页查询第{}页，每页{}条", pageNum, pageSize);
+        return repository.findAll(Example.of(file), PageRequest.of(pageNum, pageSize));
     }
 
     /**
@@ -90,6 +116,9 @@ public class PythonFileServiceImpl implements PythonFileService {
      */
     @Override
     public PythonFile queryOneByName(String name) {
-        return null;
+        log.info("查询脚本名称为：{} 的记录",name);
+        PythonFile file = new PythonFile();file.setName(name);
+        Optional<PythonFile> one = repository.findOne(Example.of(file));
+        return one.get();
     }
 }

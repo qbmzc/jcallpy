@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 
@@ -45,9 +46,9 @@ public class PythonFileController {
     private String filePath;
 
     @SneakyThrows
-    @ApiOperation("文件上传")
+    @ApiOperation("文件上传,脚本名称和描述不能为空")
     @PostMapping("upload")
-    public R upload(@RequestPart MultipartFile file, UploadParam param ) {
+    public R upload(@RequestPart MultipartFile file, @Valid UploadParam param) {
         String s = filePath + file.getOriginalFilename();
         log.info("文件:{}保存位置:{}", file.getOriginalFilename(), s);
         File tempFile = new File(s);
@@ -62,5 +63,15 @@ public class PythonFileController {
         if (save == 1)
             return new R(200, "File saved successfully");
         return new R(500, "File saving failed");
+    }
+
+    @GetMapping("/{name}")
+    public R queryByName(@PathVariable String name) {
+        PythonFile pythonFile = this.service.queryOneByName(name);
+        R r = new R();
+        r.setBody(pythonFile);
+        r.setCode(200);
+        r.setMsg("success");
+        return r;
     }
 }

@@ -2,10 +2,9 @@ package com.congcong.jcallpy.module.python.pojo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +12,8 @@ import java.util.Date;
  * @author cong
  * @since 2021/10/21 14:33
  */
+@Entity
+@ToString
 @Data
 public class PythonFile implements Serializable {
 
