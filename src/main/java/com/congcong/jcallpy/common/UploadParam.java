@@ -13,9 +13,9 @@ import javax.validation.constraints.NotBlank;
 public class UploadParam {
 
 
-    @NotBlank
-    @ApiModelProperty("脚本名称，唯一")
-    private String fileName;
+    // @NotBlank
+    // @ApiModelProperty("脚本名称，唯一")
+    // private String fileName;
     /**
      * 描述
      *

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,10 +46,10 @@ public class PythonFileController {
         File tempFilePath = new File(filePath);
         FileUtils.forceMkdir(tempFilePath);
         file.transferTo(new File(s));
-        //将记录写入数据库
+        // 将记录写入数据库
         PythonFile pythonFile = new PythonFile();
         pythonFile.setFilePath(s);
-        pythonFile.setFileName(param.getFileName());
+        pythonFile.setFileName(file.getOriginalFilename());
         pythonFile.setRemarks(param.getRemarks());
         int save = service.save(pythonFile);
         if (save == 1)
@@ -57,8 +58,8 @@ public class PythonFileController {
     }
 
     @ApiOperation("执行脚本并返回执行结果")
-    @GetMapping("/{name}")
-    public R queryByName(@PathVariable String name) {
+    @GetMapping("exec/{name}")
+    public R execByName(@PathVariable String name) {
         String exec = this.service.exec(name);
         R r = new R();
         r.setBody(exec);
@@ -66,4 +67,34 @@ public class PythonFileController {
         r.setMsg("success");
         return r;
     }
+
+    @ApiOperation("分页查询脚本记录")
+    @GetMapping("list")
+    public R queryPage(@RequestParam(required = false, defaultValue = "0") Integer pageNum,
+            @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        Page<PythonFile> page = this.service.queryPage(pageNum, pageSize);
+        return new R(200, "success", page);
+    }
+
+    @ApiOperation("根据名称查询脚本记录")
+    @GetMapping("query/{name}")
+    public R queryByName(@PathVariable String name) {
+        PythonFile file = this.service.queryOneByName(name);
+        R r = new R();
+        r.setBody(file);
+        r.setCode(200);
+        r.setMsg("success");
+        return r;
+    }
+
+    @ApiOperation("根据名称查询脚本记录")
+    @GetMapping("delete/{id}")
+    public R queryByName(@PathVariable Long id) {
+        this.service.delete(id);
+        R r = new R();
+        r.setCode(200);
+        r.setMsg("success");
+        return r;
+    }
+
 }

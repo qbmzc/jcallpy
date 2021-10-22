@@ -10,7 +10,10 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     show-sql: true
-
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    
 jcp:
   file:
     path: /Users/cong/Downloads/jcallpy/

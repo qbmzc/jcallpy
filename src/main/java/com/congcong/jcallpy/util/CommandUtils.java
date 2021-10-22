@@ -49,7 +49,7 @@ public class CommandUtils {
             if (i != 0) {
                 //mac下返回值不为0
                 log.info("命令执行失败");
-                return null;
+                throw new RuntimeException(result);
             } else {
                 log.info("命令执行完成，耗时：{} ms", System.currentTimeMillis() - start);
             }
@@ -84,10 +84,10 @@ public class CommandUtils {
         return String.join("\n", list);
     }
 
-    public static void main(String[] args) {
-        String pythonFilePath = "/Users/cong/IdeaProjects/PythonSpace/tkinter-demo/test.py";
-        String s = doExec(pythonFilePath);
-        System.out.println(s);
+    // public static void main(String[] args) {
+    //     String pythonFilePath = "/Users/cong/IdeaProjects/PythonSpace/tkinter-demo/test.py";
+    //     String s = doExec(pythonFilePath);
+    //     System.out.println(s);
 
-    }
+    // }
 }
