@@ -51,4 +51,10 @@ public interface PythonFileService {
      * @return
      */
     PythonFile  queryOneByName(String name);
+
+    /**
+     * 激活/禁用脚本
+     * @param id
+     */
+    void active(Long id);
 }

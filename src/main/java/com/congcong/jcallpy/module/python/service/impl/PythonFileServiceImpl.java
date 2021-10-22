@@ -114,9 +114,24 @@ public class PythonFileServiceImpl implements PythonFileService {
      */
     @Override
     public PythonFile queryOneByName(String name) {
-        log.info("查询脚本名称为：{} 的记录",name);
-        PythonFile file = new PythonFile();file.setFileName(name);
+        log.info("查询脚本名称为：{} 的记录", name);
+        PythonFile file = new PythonFile();
+        file.setFileName(name);
         Optional<PythonFile> one = repository.findOne(Example.of(file));
         return one.get();
+    }
+
+    @Override
+    public void active(Long id) {
+        Optional<PythonFile> findById = this.repository.findById(id);
+        PythonFile pythonFile = findById.get();
+        pythonFile.setUpdateTime(new Date());
+        pythonFile.setState(pythonFile.getState() == 1 ? 0 : 1);
+        String s = "禁用";
+        if (pythonFile.getState() == 1) {
+            s = "激活";
+        }
+        log.info("{} 用脚本 {}", s, pythonFile.getFileName());
+        this.update(pythonFile);
     }
 }

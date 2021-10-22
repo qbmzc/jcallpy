@@ -37,19 +37,19 @@
             <td th:text="${pf.updateTime}">6</td>
             <td th:text="${pf.version}">6</td>
             <td th:text="${pf.isDeleted}">6</td>
-            <!-- <td><a th:href="@{/toEdit(id=${pf.id})}">edit</a></td>
-            <td><a th:href="@{/delete(id=${pf.id})}">delete</a></td> -->
+            <td><a th:href="@{/active/{id}(id=${pf.id})}">激活/禁用</a></td>
+            <td><a th:href="@{/delete/{id}(id=${pf.id})}">删除</a></td>
         </tr>
         </tbody>
     </table>
 
 </div>
-<!-- TODO 待实现 -->
-<!-- <div class="form-group">
+
+<div class="form-group">
     <div class="col-sm-2 control-label">
-        <a href="/toAdd" th:href="@{/toAdd}" class="btn btn-info">add</a>
+        <a href="/swagger-ui/index.html" th:href="@{/swagger-ui/index.html}" class="btn btn-info">add</a>
     </div>
-</div> -->
+</div>
 
 <div class="modal-footer no-margin-top">
     <ul class="pagination pull-right no-margin">

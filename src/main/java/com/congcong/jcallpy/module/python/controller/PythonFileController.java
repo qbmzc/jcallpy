@@ -89,7 +89,7 @@ public class PythonFileController {
 
     @ApiOperation("根据名称查询脚本记录")
     @GetMapping("delete/{id}")
-    public R queryByName(@PathVariable Long id) {
+    public R delete(@PathVariable Long id) {
         this.service.delete(id);
         R r = new R();
         r.setCode(200);

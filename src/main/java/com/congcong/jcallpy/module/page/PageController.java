@@ -38,4 +38,20 @@ public class PageController {
         return "list";
     }
     
+
+    @ApiOperation("根据名称查询脚本记录")
+    @GetMapping("delete/{id}")
+    public String delete(@PathVariable Long id) {
+        this.service.delete(id);
+        return "redirect:/list";
+    }
+
+
+    @ApiOperation("禁用/启用脚本")
+    @GetMapping("active/{id}")
+    public String active(@PathVariable Long id) {
+        this.service.active(id);
+        return "redirect:/list";
+    }
+
 }
