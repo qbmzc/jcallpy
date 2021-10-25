@@ -21,3 +21,4 @@ jcp:
 logging:
   level:
     com.congcong.jcallpy: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace

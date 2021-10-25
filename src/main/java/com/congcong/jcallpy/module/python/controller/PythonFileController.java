@@ -8,6 +8,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +44,7 @@ public class PythonFileController {
     @PostMapping("upload")
     public R upload(@RequestPart MultipartFile file, @Valid UploadParam param) {
         String s = filePath + file.getOriginalFilename();
+        log.info("name:{}",file.getName());
         log.info("文件:{}保存位置:{}", file.getOriginalFilename(), s);
         File tempFilePath = new File(filePath);
         FileUtils.forceMkdir(tempFilePath);
@@ -49,7 +52,7 @@ public class PythonFileController {
         // 将记录写入数据库
         PythonFile pythonFile = new PythonFile();
         pythonFile.setFilePath(s);
-        pythonFile.setFileName(file.getOriginalFilename());
+        pythonFile.setFileName(StringUtils.substring(file.getOriginalFilename(), 0, file.getOriginalFilename().lastIndexOf(".")));
         pythonFile.setRemarks(param.getRemarks());
         int save = service.save(pythonFile);
         if (save == 1)

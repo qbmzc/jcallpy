@@ -36,6 +36,16 @@ public class PythonFileServiceImpl implements PythonFileService {
      */
     @Override
     public int save(PythonFile pythonFile) {
+        log.info("脚本名称：{}", pythonFile.getFileName());
+        PythonFile queryOneByName = this.queryOneByName(pythonFile.getFileName());
+        if (null != queryOneByName) {
+            queryOneByName.setFilePath(pythonFile.getFilePath());;
+            queryOneByName.setUpdateTime(new Date());
+            queryOneByName.setVersion(queryOneByName.getVersion()+1);
+            repository.save(queryOneByName);
+            log.info("已存在同名脚本，将更新脚本 {}", pythonFile.getFileName());
+            return 1;
+        }
         pythonFile.setCreateTime(new Date());
         pythonFile.setUpdateTime(new Date());
         pythonFile.setState(0);
