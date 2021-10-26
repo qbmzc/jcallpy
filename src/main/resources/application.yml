@@ -9,16 +9,19 @@ spring:
     password: zc1021
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
+    open-in-view: false
     show-sql: true
     hibernate:
       ddl-auto: update
     database: mysql
-    
+
+# 脚本文件保存位置    
 jcp:
   file:
     path: /Users/cong/Downloads/jcallpy/
 
+## 日志
 logging:
   level:
     com.congcong.jcallpy: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.hibernate.type.descriptor.sql.BasicBinder: trace # 显示sql参数
