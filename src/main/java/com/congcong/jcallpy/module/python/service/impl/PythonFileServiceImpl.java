@@ -82,6 +82,10 @@ public class PythonFileServiceImpl implements PythonFileService {
         file.setFileName(name);
         Example<PythonFile> example = Example.of(file);
         Optional<PythonFile> optional = this.repository.findOne(example);
+        if(!optional.isPresent()){
+            log.error("脚本查询失败", name);
+            return null;
+        }
         PythonFile pythonFile = optional.get();
         String path = pythonFile.getFilePath();
         return CommandUtils.doExec(path);
@@ -128,12 +132,17 @@ public class PythonFileServiceImpl implements PythonFileService {
         PythonFile file = new PythonFile();
         file.setFileName(name);
         Optional<PythonFile> one = repository.findOne(Example.of(file));
-        return one.get();
+        if(one.isPresent())
+            return one.get();
+        return null;
     }
 
     @Override
     public void active(Long id) {
         Optional<PythonFile> findById = this.repository.findById(id);
+        if(!findById.isPresent()){
+            return;
+        }
         PythonFile pythonFile = findById.get();
         pythonFile.setUpdateTime(new Date());
         pythonFile.setState(pythonFile.getState() == 1 ? 0 : 1);
