@@ -1,0 +1,184 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=heatmap-cartesian
+-->
+<!DOCTYPE html>
+<html style="height: 100%" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="../resources/favicon.ico" th:href="@{/static/favicon.ico}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body style="height: 100%; margin: 0">
+<div id="container" style="height: 100%"></div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+<!-- Uncomment this line if you want to dataTool extension
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/extension/dataTool.min.js"></script>
+-->
+<!-- Uncomment this line if you want to use gl extension
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+-->
+<!-- Uncomment this line if you want to echarts-stat extension
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+-->
+<!-- Uncomment this line if you want to use map
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/map/js/world.js"></script>
+-->
+<!-- Uncomment these two lines if you want to use bmap extension
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@{{version}}/dist/extension/bmap.min.js"></script>
+-->
+
+<script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var borderColor;
+
+    // prettier-ignore
+    const hours = [
+        '0', '1', '2', '3', '4', '5', '6',
+        '7', '8', '9', '10', '11',
+        '12', '13', '14', '15', '16', '17',
+        '18'
+    ];
+    // prettier-ignore
+    const days = [
+        '0', '1', '2', '3', '4', '5', '6',
+        '7', '8', '9', '10', '11',
+        '12', '13', '14', '15', '16', '17',
+        '18'
+    ];
+    // prettier-ignore
+    let data = [
+            [1, 1, 1, "Australia", 0],
+            [2, 2, 2, "Canada", 1],
+            [3, 3, 3, "China", 0],
+            [4, 4, 4, "Cuba", 0],
+            [5, 5, 5, "Finland", 1],
+            [6, 7, 6, "France", 1],
+            [6, 8, 7, "Germany", 0],
+            [7, 7, 8, "Iceland", 0],
+            [8, 8, 9, "India", 1],
+            [9, 9, 10, "Japan", 0],
+            [10, 9, 11, "North Korea", 1],
+            [11, 12, 12, "South Korea", 1],
+            [12, 11, 13, "New Zealand", 0],
+            [13, 10, 14, "Norway", 0],
+            [14, 7, 15, "Poland", 0],
+            [15, 9, 16, "Russia", 1],
+            [16, 6, 17, "Turkey", 1],
+            [17, 7, 18, "United Kingdom", 0],
+            [18, 15, 19, "United States", 1]
+        ],
+        option = {
+            tooltip: {
+                show: true,
+                position: 'top'
+            },
+            grid: {
+                height: '80%',
+                // width: '800',
+                top: '10%'
+            },
+            xAxis: {
+                type: 'category',
+                data: hours,
+                axisTick: {
+                    length: 5
+                },
+                splitArea: {
+                    show: true
+                }
+            },
+            yAxis: {
+                type: 'category',
+                data: days,
+                axisTick: {
+                    length: 5
+                },
+                splitArea: {
+                    show: true
+                }
+            },
+            // visualMap: {
+            //     min: 0,
+            //     max: 10,
+            //     calculable: true,
+            //     orient: 'horizontal',
+            //     left: 'center',
+            //     bottom: '15%'
+            // },
+            series: [
+                // {
+                //     name: 'Punch Card',
+                //     type: 'heatmap',
+                //     // symbolSize: function (val) {
+                //     //     return val[1] / 40;
+                //     // },
+                //     data: data,
+                //     label: {
+                //         show: true
+                //     },
+                //     emphasis: {
+                //         itemStyle: {
+                //             shadowBlur: 10,
+                //             shadowColor: 'rgba(0, 0, 0, 0.5)'
+                //         }
+                //     }
+                // },
+                {
+                    name: 'myScatter',
+                    type: 'effectScatter',
+                    data: data,
+                    symbolSize: function (data) {
+                        console.log(data[2])
+                        //限制大小在9-18之间方便显示
+                        return data[2] % 10 + 9;
+                    },
+                    itemStyle: {
+                        color: function (params) {
+                            console.log(params.data[4])
+                            if (params.data[4] === 0) {
+                                borderColor = "pink";
+                                return "rgba(255, 0, 0, 1)"
+                            } else {
+                                borderColor = "green"
+                                return "rgba(0, 0, 0, 1)"
+                            }
+                        },
+                        borderColor: "rgba(255,255,255,1)",
+                        label: {
+                            show: true
+                        }
+
+                    }
+
+                }
+            ]
+        };
+
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+
+    function addData() {
+        $.get("/echars/data").done(function (res) {
+            data = res;
+        })
+    }
+
+    // js动态获取数据
+    setInterval(function () {
+        addData()
+        console.log(data)
+        myChart.setOption({
+            series: [{
+                name: 'myScatter',
+                data: data
+            }]
+        })
+    }, 1000)
+</script>
+</body>
+</html>
